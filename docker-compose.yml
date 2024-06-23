@@ -1,18 +1,8 @@
-<<<<<<< Updated upstream
 version: '3'
 services:
   web:
     build:
-    context: .
-    dockerfile: Dockerfile
-  ports:
-=======
-version: '3'
-services:
-  web:
-    build:
-    context: .
-    dockerfile: Dockerfile
-  ports:
->>>>>>> Stashed changes
-    - "80:80"
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
