@@ -24,8 +24,12 @@ jobs:
           docker build \
           -f Dockerfile \
           -t ap2-plataformas-computacionais:${{ github.sha }} .
-
+          
       - name: Deploy
-        run: |
-          echo "$SSH_KEY" > temp  
-          ssh -i ./temp $SSH_USER@$SSH_HOST ifconfig
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: whoami
