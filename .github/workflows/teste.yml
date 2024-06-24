@@ -1,0 +1,14 @@
+name: Verificar Conectividade
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-connectivity:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Verificar conectividade com a VM
+        run: |
+          ping -c 4 ${{ secrets.SSH_HOST }}
