@@ -20,7 +20,7 @@ jobs:
         run: |
           docker build \
           -f Dockerfile \
-          -t ap2-plataformas-computacionais:${{ github.sha }}
+          -t ap2-plataformas-computacionais:${{ github.sha }} .
 
       - name: Deploy
         run:
