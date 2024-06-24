@@ -24,6 +24,7 @@ jobs:
       - name: Save Image
         run: |
           docker save --output image.tar ap2-plataformas-computacionais:${{ github.sha }}
+          chmod 777 image.tar
 
       - name: Transfer Image
         uses: appleboy/scp-action@v0.1.7
