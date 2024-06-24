@@ -24,7 +24,11 @@ jobs:
           docker build \
           -f Dockerfile \
           -t ap2-plataformas-computacionais:${{ github.sha }} .
-          
+      - name: Transfer Image
+        run: |
+          docker save --output image.tar ap2-plataformas-computacionais:${{ github.sha }}
+          echo "$SSH_KEY" > temp
+          scp -i ./temp ./image.tar $SSH_USER@$SSH_HOST:/home/$SSH_USER/image.tar
       - name: Deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -32,4 +36,6 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           port: 22
-          script: whoami
+          script: |
+            docker load ~/image.tar
+            docker run -d ap2-plataformas-computacionais:${{ github.sha }}
