@@ -24,7 +24,7 @@ jobs:
 
       - name: Deploy
         run:
-          docker save ap2-plataformas-computacionais:${{ github.sha }} > image.tar
-          echo "$SSH_KEY" > temp
-          scp -i ./temp ./image.tar $SSH_USER@$SSH_HOST:/image.tar
+          docker save ap2-plataformas-computacionais:${{ github.sha }} > image.tar && \
+          echo "$SSH_KEY" > temp && \
+          scp -i ./temp ./image.tar $SSH_USER@$SSH_HOST:/image.tar && \
           ssh -i ./temp $SSH_USER@$SSH_HOST docker load --input /image.tar && docker run -d ap2-plataformas-computacionais:${{ github.sha }}
