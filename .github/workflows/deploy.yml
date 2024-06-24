@@ -44,5 +44,5 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            docker load ~/image.tar
+            docker load --input ~/image.tar
             docker run -d ap2-plataformas-computacionais:${{ github.sha }}
