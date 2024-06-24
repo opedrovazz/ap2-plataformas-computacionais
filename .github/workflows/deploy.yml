@@ -46,4 +46,4 @@ jobs:
           script: |
             docker load --input ~/image.tar
             docker rm -f appweb
-            docker run -d -p 80:81 --name appweb ap2-plataformas-computacionais:${{ github.sha }}
+            docker run -d -p 80:80 --name appweb ap2-plataformas-computacionais:${{ github.sha }}
