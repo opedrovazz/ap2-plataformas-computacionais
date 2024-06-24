@@ -8,23 +8,23 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-22.04
+    env:
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_KEY: ${{ secrets.SSH_KEY }}
     steps:
-      - name: Fazer checkout do código
+      - name: Checkout
         uses: actions/checkout@v2
-      - name: Copiar arquivos via SSH
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: "./"
-          target: "~/app/"
-      - name: Executar comandos SSH
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            cd ~/app/
-            docker-compose up -d
+
+      - name: Build Docker Image
+        run: |
+          docker build \
+          -f Dockerfile \
+          -t ap2-plataformas-computacionais:${{ github.sha }}
+
+      - name: Deploy
+        run:
+          docker save ap2-plataformas-computacionais:${{ github.sha }} > image.tar
+          echo "$SSH_KEY" > temp
+          scp -i ./temp ./image.tar $SSH_USER@$SSH_HOST:/image.tar
+          ssh -i ./temp $SSH_USER@$SSH_HOST docker load --input /image.tar && docker run -d ap2-plataformas-computacionais:${{ github.sha }}
