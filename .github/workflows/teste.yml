@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Verificar conectividade com a VM
         run: |
-          ping -c 4 ${{ secrets.SSH_HOST }}
+          ping -c 4 152.67.58.233
