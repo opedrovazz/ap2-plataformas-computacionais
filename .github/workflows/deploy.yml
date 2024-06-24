@@ -12,27 +12,25 @@ jobs:
       - name: Fazer checkout do código
         uses: actions/checkout@v2
 
+      - name: Verificar conectividade com a VM
+        run: |
+          ping -c 4 152.67.58.233
+
       - name: Configurar SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-          cat ~/.ssh/id_rsa
-          ping -c 4 ${{ secrets.SSH_HOST }}
-
-      - name: Testar Conexão SSH
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} echo "Conexão SSH bem-sucedida"
+          ssh-keyscan -H 152.67.58.233 >> ~/.ssh/known_hosts
 
       - name: Copiar arquivos via SSH
         run: |
-          rsync -avz -e "ssh -i ~/.ssh/id_rsa" . ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USER }}/app/
+          rsync -avz -e "ssh -i ~/.ssh/id_rsa" . ubuntu@152.67.58.233:/home/ubuntu/app/
 
       - name: Executar comandos SSH
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-          cd /home/${{ secrets.SSH_USER }}/app
+          ssh -i ~/.ssh/id_rsa ubuntu@152.67.58.233 << 'EOF'
+          cd /home/ubuntu/app
           sudo docker-compose down
           sudo docker-compose up -d --build
           EOF
